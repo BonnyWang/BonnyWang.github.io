@@ -1,6 +1,6 @@
 import app from './main.js'
 
-const publicPath = "/";
+const publicPath = "/spacePersona/";
 
 // Setting up basic elements
 
