@@ -1,0 +1,220 @@
+<html>
+	<head>
+		<title>WebGL - Rotating Cube</title>
+		<link rel="stylesheet" href="./style.css" type="text/css">
+	</head>
+	<body>
+		<canvas id="c" width="800" height="600">
+			Your browser does not support this!
+		</canvas>
+		
+		<!--Useful js libs to include  -->
+		<script src="./scripts/gl-matrix.js"></script>
+		<script src="https://webglfundamentals.org/webgl/resources/webgl-utils.js"></script>
+
+		<!-- Define shaders -->
+		<script  id="vertex-shader" type="x-shader/x-vertex"># version 300 es
+			precision mediump float;
+			in vec3 vertPosition;
+			in vec3 vertColor;
+			out vec3 fragColor;
+			uniform mat4 mWorld;
+			uniform mat4 mView;
+			uniform mat4 mProj;
+
+			uniform mat4 u_identity;
+
+			uniform vec3 u_rotation;
+			
+			// This is used to record the rotation of 9 planes in the rubik's cube
+			// Max number of turns allowed in that program
+			uniform mat3 u_subRotations[1000];
+			uniform int u_turn;
+
+			uniform float u_time;
+
+			//Functions to do rotation based on given degrees
+			mat4 getXrotation( float degree){
+				mat4 rotationX = mat4(
+					1, 0, 0, 0,
+					0, cos(degree), -sin(degree), 0,
+					0, sin(degree), cos(degree), 0,
+					0, 0, 0, 1
+				);
+
+				return rotationX;
+			}
+			
+			mat4 getYrotation( float degree){
+				mat4 rotationY = mat4(
+					cos(degree), 0, sin(degree), 0,
+					0, 1, 0, 0,
+					-sin(degree), 0, cos(degree), 0,
+					0, 0, 0, 1
+				);
+
+				return rotationY;
+			}
+
+			mat4 getZrotation( float degree){
+				mat4 rotationZ = mat4(
+					cos(degree), -sin(degree), 0, 0,
+					sin(degree), cos(degree), 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1
+				);	
+
+				return rotationZ;
+			}
+
+
+			void main()
+			{
+				
+				int INFINITE = 10;
+
+				//Define 3 ranges for different planes 
+				vec2 ranges[3];
+				ranges[0] = vec2(1.05, INFINITE);
+				ranges[1] = vec2(-1.05, 1.05);
+				ranges[2] = vec2(-INFINITE, -1.05);
+
+				mat4 modelMatrix = u_identity;
+
+				vec4 updatedPosition = vec4(vertPosition, 1.0);
+				
+				// Change the rotation based on all the operation on the 9 planes
+				// This should be used for only one operation
+				for(int t = 0; t <= u_turn; t++){
+
+					for(int i=0; i<3; i++){
+						
+						if((updatedPosition.x > ranges[i][0]) && (updatedPosition.x < ranges[i][1])){
+							mat4 tempRotationX = getXrotation(u_subRotations[t][0][i]);
+							modelMatrix = modelMatrix * tempRotationX;
+							updatedPosition = tempRotationX*updatedPosition;
+						}
+
+						
+						if((updatedPosition.y > ranges[i][0]) && (updatedPosition.y < ranges[i][1])){
+							mat4 tempRotationY = getYrotation(u_subRotations[t][1][i]);
+							modelMatrix = modelMatrix * tempRotationY;
+							updatedPosition = tempRotationY*updatedPosition;
+
+						}
+
+						if((updatedPosition.z > ranges[i][0]) && (updatedPosition.z < ranges[i][1])){
+							mat4 tempRotationZ = getZrotation(u_subRotations[t][2][i]);
+							modelMatrix = modelMatrix * tempRotationZ;
+							updatedPosition = tempRotationZ*updatedPosition;
+
+						}
+					}
+
+				}
+				
+
+				// Exclude the case when it is the axis vertex, Rotate the axis so that they can be always seen in 3D space no matter how you rotate it
+				float axisRotateSpeed = 0.004;
+
+				if(abs(vertPosition.x) > 5.0 ){
+					mat4 xAxisRotation = getXrotation(u_time*axisRotateSpeed);
+					updatedPosition = vec4(vertPosition, 1.0) *xAxisRotation;			
+				}
+				if(abs(vertPosition.y) > 5.0 ){
+					mat4 yAxisRotation = getYrotation(u_time*axisRotateSpeed);
+					updatedPosition = vec4(vertPosition, 1.0) *yAxisRotation;			
+				}
+				if(abs(vertPosition.z) > 5.0 ){
+					mat4 zAxisRotation = getZrotation(u_time*axisRotateSpeed);
+					updatedPosition = vec4(vertPosition, 1.0) *zAxisRotation;			
+				}
+				
+
+				gl_Position = mProj * mView * mWorld *updatedPosition;
+				fragColor = vertColor;
+			}
+		</script>
+		<script  id="fragment-shader" type="x-shader/x-fragment"># version 300 es
+			
+			precision mediump float;
+
+			in vec3 fragColor;
+			out vec4 color;
+			void main()
+			{
+				color = vec4(fragColor, 1.0);
+			}
+		</script>
+
+		<!-- Main script for webgl -->
+		<script src="app.js" type="module"></script>
+		<span id="initial">
+			<h2>
+				How messy do you want? 
+	
+			</h2>
+			<input type="text" id="inputNumber">
+			<label for="upload" class="custom-file-upload">
+				Upload
+			</label>
+			<input type="file" id="upload">
+		</span>
+
+		<span id="UI">
+			<h1>
+				Plane Axis: X
+			</h1>
+			<div>
+				<div class="xColor"></div>
+				<button id="x0p">←</button>
+				<button id="x0m">→</button>
+				<br>
+				<button id="x1p">←</button>
+				<button id="x1m">→</button>
+				<br>
+				<button id="x2p">←</button>
+				<button id="x2m">→</button>
+			</div>
+			<br>
+			<h1>
+				Plane Axis: Y
+			</h1>
+			<div>
+				<div class="yColor"></div>
+				<button id="y0p">←</button>
+				<button id="y0m">→</button>
+				<br>
+				<button id="y1p">←</button>
+				<button id="y1m">→</button>
+				<br>
+				<button id="y2p">←</button>
+				<button id="y2m">→</button>
+			</div>	
+			<br>
+			<h1>
+				Plane Axis: Z
+			</h1>
+			<div>
+				<div class="zColor"></div>
+				<button id="z0p">←</button>
+				<button id="z0m">→</button>
+				<br>
+				<button id="z1p">←</button>
+				<button id="z1m">→</button>
+				<br>
+				<button id="z2p">←</button>
+				<button id="z2m">→</button>
+			</div>
+
+			<br>
+			<br>
+			<h1>
+				Current State
+			</h1>
+			<button id="download">
+				Download 
+			</button>
+		</span>
+	</body>
+</html>
