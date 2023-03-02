@@ -281,7 +281,7 @@ function setUpScene(gl,canvas, program, boxIndices){
 	const inputField = document.getElementById("inputNumber");
 	const initialSpan = document.getElementById("initial");
 
-	inputField.addEventListener("keyup", function(event) {
+	inputField.addEventListener("keydown", function(event) {
 		if (event.key === "Enter") {
 			intendedTurn = inputField.value;
 			for (let t = 0; t < intendedTurn; t++) {
