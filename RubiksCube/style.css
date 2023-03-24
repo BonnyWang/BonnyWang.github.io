@@ -14,7 +14,6 @@ body {
 h1{
   font-family: 'Courier New', Courier, monospace;
   color: deeppink ;
-  background-color: ;
   font-size: larger;
 }
 
@@ -36,6 +35,19 @@ button:hover{
 
 button:active{
   background-color: deeppink;
+}
+
+#startB{
+  margin:auto;
+  margin-top:20px;
+  border:none;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+}
+
+#startB:hover{
+  border: deeppink 1px solid;
+
 }
 
 #download{

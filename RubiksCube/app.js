@@ -281,23 +281,33 @@ function setUpScene(gl,canvas, program, boxIndices){
 	const inputField = document.getElementById("inputNumber");
 	const initialSpan = document.getElementById("initial");
 
+	function startGame(){
+		intendedTurn = inputField.value;
+		for (let t = 0; t < intendedTurn; t++) {
+			subRotations[9*t + Math.floor(Math.random() * 9)] = Math.sign((Math.random()-0.5))*Math.PI/2;
+			turn = turn + 1;
+			gl.uniform1i(turnUniformLocation, turn);
+			gl.uniformMatrix3fv(subRotationUniformLocation, gl.FALSE,subRotations);
+		}
+
+		requestAnimationFrame(loop);
+
+		inputField.style.display = "none";
+		initialSpan.style.display = "none";
+
+	}
+
 	inputField.addEventListener("keydown", function(event) {
 		if (event.key === "Enter") {
-			intendedTurn = inputField.value;
-			for (let t = 0; t < intendedTurn; t++) {
-				subRotations[9*t + Math.floor(Math.random() * 9)] = Math.sign((Math.random()-0.5))*Math.PI/2;
-				turn = turn + 1;
-				gl.uniform1i(turnUniformLocation, turn);
-				gl.uniformMatrix3fv(subRotationUniformLocation, gl.FALSE,subRotations);
-			}
-
-			requestAnimationFrame(loop);
-
-			inputField.style.display = "none";
-			initialSpan.style.display = "none";
-
+			startGame();
 		}
 	});
+
+	let startButton = document.getElementById("startB");
+	startButton.addEventListener("click",function(){
+		startGame();
+	}, false)
+
 
 	// Handle download state function
 	const downloadB = document.getElementById("download");
