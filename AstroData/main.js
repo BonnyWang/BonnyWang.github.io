@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { PCDLoader } from 'three/addons/loaders/PCDLoader.js';
 
-const publicPath = "/AstroData/";
+const publicPath =  "/AstroData/";
 
 
 const scene = new THREE.Scene();
@@ -67,6 +67,14 @@ function onMouseUp(evt) {
     mouseDown = false;
 }
 
+function onMouseWheel(evt) {
+    // console.log(evt);
+    camera.fov -= evt.deltaY * 0.05;
+    camera.updateProjectionMatrix();
+
+    console.log(camera.fov);
+}
+
 function addMouseHandler(canvas) {
     canvas.addEventListener('mousemove', function (e) {
         onMouseMove(e);
@@ -77,6 +85,8 @@ function addMouseHandler(canvas) {
     canvas.addEventListener('mouseup', function (e) {
         onMouseUp(e);
     }, false);
+
+    canvas.addEventListener('wheel', function (e) {onMouseWheel(e)}, false);
 }
 
 
