@@ -1,6 +1,32 @@
 /* Black body and center */
 body {
     background-color: black;
-    color: white;
+    color:lightblue;
     text-align: center;
+    font-family: Arial, sans-serif;
 }
+p{
+    /* left align */
+    text-align: left;
+    /* auto fit width */
+    width: fit-content;
+    /* center */
+    margin: 0 auto;
+    background-image: url('/Moonsters/frame.png');
+    /* auto fit to the size */
+    background-size: contain;
+    background-repeat: no-repeat;
+    /* at the center */
+    background-position: center;
+    padding: 150px;
+}
+
+p em {
+    /* not italic */
+    font-style: normal;
+    color:white;
+}
+
+
+
+

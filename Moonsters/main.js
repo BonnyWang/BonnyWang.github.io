@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+import { getDatabase, ref, onValue, orderByChild, query } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,6 +17,7 @@ appId: "1:557353828331:web:1cff264c162fa01db723ae",
 measurementId: "G-FYH1DTN2BN"
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -24,17 +25,35 @@ const analytics = getAnalytics(app);
 const database = getDatabase(app);
 
 
-const starCountRef = ref(database, 'LeaderBoard');
-document.getElementById("Board").innerText = "\n";
-onValue(starCountRef, (snapshot) => {
-  const data = snapshot.val();
-  console.log(Object.entries(data)[1][1].name);
-  for (let i = 0; i < Object.entries(data).length; i++) {
-    console.log(Object.entries(data)[i][1].name);
-    console.log(Object.entries(data)[i][1].score);
+const reference =  query(ref(database, 'LeaderBoard'),  orderByChild('score'));
 
-    document.getElementById("Board").innerText += Object.entries(data)[i][1].name + " " + Object.entries(data)[i][1].score + "\n";
+const seperator = "<br>";
+
+let childs = [];
+
+document.getElementById("Board").innerText = "\n";
+onValue(reference, (snapshot) => {
+  snapshot.forEach(function(childSnapshot) {
+    var childData = childSnapshot.val();
+    childs.push(childData);
+    
+  })
+
+  // Inverse order update the board
+  childs.reverse();
+  document.getElementById("Board").innerHTML += "<em>Rank &nbsp&nbsp&nbsp &nbsp&nbsp Name &nbsp&nbsp&nbsp &nbsp&nbsp Score <br></em>";
+  for (let i = 0; i < childs.length; i++) {
+    // add the seperator
+    document.getElementById("Board").innerHTML += seperator;
+    // set the rank to different color
+
+    document.getElementById("Board").innerHTML += (i + 1) + " &nbsp&nbsp&nbsp &nbsp&nbsp";
+
+    document.getElementById("Board").innerHTML += childs[i].name + " &nbsp&nbsp&nbsp &nbsp&nbsp" + childs[i].score + "<br>";
   }
 
-//   document.getElementById("Board").innerText = data;
+  document.getElementById("Board").innerHTML += seperator;
+
+  
+
 });

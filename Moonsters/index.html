@@ -1,14 +1,27 @@
-<!-- HTML Basic Templates -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>LeaderBoard</title>
     <!-- CSS Styles -->
     <link rel="stylesheet" type="text/css" href="/Moonsters/style.css">
+    <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+          }
+        }
+    </script>
 </head>
 <body>
     <h1>Moonster's LeaderBoard</h1>
+    <Canvas id="Canvas"></Canvas>
     <p id="Board">This is a basic HTML template.</p>
+    <!-- <script type="module" src="main.js"></script> -->
+    <!-- <script type="module" src="background.js"></script> -->
+    <script type="module" src="Moonsters/background.js"></script>
     <script type="module" src="/Moonsters/main.js"></script>
 
 </html>
