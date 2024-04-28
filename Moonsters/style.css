@@ -45,6 +45,10 @@ td{
     color: white;
 }
 
+tr{
+    font-size: x-large;
+}
+
 tr:nth-child(2) {
     font-size:xx-large;
     font-weight: bold;
