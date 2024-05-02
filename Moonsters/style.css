@@ -3,7 +3,7 @@
 
 body {
     background-color: black;
-    background-image: url('./skybox.jpg');
+    background-image: url('./imgs/skybox.jpg');
     background-size: cover;
     background-repeat: repeat;
     background-position: center;
@@ -24,7 +24,7 @@ table{
     
 }
 tbody{
-    background-image: url('./frame.png');
+    background-image: url('./imgs/frame.png');
     /* background-image: url('/Moonsters/frame.png'); */
     /* auto fit to the size */
     background-size: 100% 100%;

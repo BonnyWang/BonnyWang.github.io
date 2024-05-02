@@ -1,11 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
 import { getDatabase, ref, onValue, orderByChild, query } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
 apiKey: "AIzaSyCXdMp5vBVl_chtOAl2bMRDUpav4nf4xUE",
 authDomain: "moonsters-54393.firebaseapp.com",
@@ -27,7 +23,6 @@ const database = getDatabase(app);
 
 const reference =  query(ref(database, 'LeaderBoard'),  orderByChild('score'));
 
-const seperator = "<br>";
 
 let childs = [];
 
@@ -88,7 +83,7 @@ function updateBoard(childs){
     var paddingCellEnd = newRow.insertCell(4);
 
     if(i < 3){
-      rankCell.innerHTML = "<img src='./"+(i+1)+".png' width='30' height='30'>";
+      rankCell.innerHTML = "<img src='./imgs/"+(i+1)+".png' width='30' height='30'>";
       nameCell.style.color = TopRankColors[i];
       scoreCell.style.color = TopRankColors[i];
     }else{
